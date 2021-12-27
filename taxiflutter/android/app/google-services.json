@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "567629278309",
+    "project_id": "taxi-flutter-c5624",
+    "storage_bucket": "taxi-flutter-c5624.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:567629278309:android:6d0c16e88661d5f0ddaa8c",
+        "android_client_info": {
+          "package_name": "com.example.taxiflutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "567629278309-i342j2inmsdl4osjdo46f2grv4tt2dkh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCRuruqp8amSTsws9by9YF9FQSr-g4LqSI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "567629278309-i342j2inmsdl4osjdo46f2grv4tt2dkh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

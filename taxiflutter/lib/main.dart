@@ -12,8 +12,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      title: 'Taxi Moro App',
       theme: ThemeData(
+        fontFamily: "Brand Bold",
         primarySwatch: Colors.blue,
       ),
       home: const MainScreen(),
