@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:taxiflutter/AllScreens/registrationscreen.dart';
+import 'package:taxiflutter/AllWidgets/progress_dialog.dart';
 
 import '../main.dart';
 import 'mainscreen.dart';
@@ -119,29 +120,39 @@ class LoginScreen extends StatelessWidget {
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   void LoginAndAuthUser(BuildContext context) async {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return ProgressDialog(
+            message: "Authenticating, Please wait...",
+          );
+        });
     final User? user = (await _firebaseAuth
             .signInWithEmailAndPassword(
                 email: emailtextEditingController.text,
                 password: passwordtextEditingController.text)
             .catchError((e) {
+      Navigator.pop(context);
       Fluttertoast.showToast(msg: "Error:" + e.message.toString());
     }))
         .user;
-    
-    if (user != null) {
-      userRef.child(user.uid).once().then(
 
-      (DatabaseEvent snap) {
-            if (snap != null) {
-              Navigator.pushNamedAndRemoveUntil(
-                  context, MainScreen.idScreen, (route) => false);
-                   Fluttertoast.showToast(msg: "your are logged-in now.");
-            }else{
-                  _firebaseAuth.signOut();
-      Fluttertoast.showToast(msg: "No record exists for this user. please create new account");
-            }
-          });
+    if (user != null) {
+      userRef.child(user.uid).once().then((DatabaseEvent snap) {
+        if (snap != null) {
+          Navigator.pushNamedAndRemoveUntil(
+              context, MainScreen.idScreen, (route) => false);
+          Fluttertoast.showToast(msg: "your are logged-in now.");
+        } else {
+          Navigator.pop(context);
+          _firebaseAuth.signOut();
+          Fluttertoast.showToast(
+              msg: "No record exists for this user. please create new account");
+        }
+      });
     } else {
+      Navigator.pop(context);
       Fluttertoast.showToast(msg: "Error Occured,cant be sgin in");
     }
   }

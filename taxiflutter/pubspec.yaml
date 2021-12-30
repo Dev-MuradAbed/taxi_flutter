@@ -38,6 +38,10 @@ dependencies:
   firebase_auth:
   firebase_database:
   fluttertoast:
+  google_maps_flutter:
+  geolocator:
+  location:
+  http:
 
 dev_dependencies:
   flutter_test:

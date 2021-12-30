@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         fontFamily: "Brand Bold",
         primarySwatch: Colors.blue,
       ),
-      initialRoute: LoginScreen.idScreen,
+      initialRoute: MainScreen.idScreen,
       routes: {
         RegisterationScreen.idScreen: (context) => RegisterationScreen(),
         MainScreen.idScreen: (context) => MainScreen(),
