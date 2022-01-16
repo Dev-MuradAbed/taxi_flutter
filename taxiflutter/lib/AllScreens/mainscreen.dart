@@ -1,12 +1,11 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
 import 'package:taxiflutter/AllWidgets/divider.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:taxiflutter/Assistants/assistant_methods.dart';
 
 class MainScreen extends StatefulWidget {
   static const String idScreen = "mainScreen";
@@ -19,40 +18,32 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   Completer<GoogleMapController> _controllerGoogleMap = Completer();
   GoogleMapController? newgoogleMapController;
-
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  LatLng _initialcameraposition = LatLng(20.5937, 78.9629);
-  GoogleMapController? _controller;
-  Location _location = Location();
-
-  void _onMapCreated(GoogleMapController _cntlr) {
-    _controller = _cntlr;
-    _location.onLocationChanged.listen((l) {
-      _controller!.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(target: LatLng(l.latitude!, l.longitude!), zoom: 15),
-        ),
-      );
-    });
+  late Position currentPosition;
+  var geoLocator = Geolocator();
+  double bottomPaddingOfMap = 0;
+ static String? address;
+  late LatLng latLatPosition;
+  void locatePosition() async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    currentPosition = position;
+    print("The currentPosition= :: ${currentPosition}");
+    latLatPosition = LatLng(position.latitude, position.longitude);
+    print("The latLatPosition= :: ${latLatPosition}");
+    CameraPosition cameraPosition =
+        CameraPosition(target: latLatPosition, zoom: 14);
+    newgoogleMapController!
+        .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+     address = await AssistantMethods.searchCoordinateAddress(position);
+  
+      print("This is your Address :: " + address!);
+    
   }
-  // late Position currentPosition;
-  // var geolocator = Geolocator();
 
-  // void locatePosition() async {
-  //   Position position = await Geolocator.getCurrentPosition(
-  //       desiredAccuracy: LocationAccuracy.high);
-  //   currentPosition = position;
-  //   LatLng latLatPosition = LatLng(position.latitude, position.longitude);
-  //   CameraPosition cameraPosition =
-  //       CameraPosition(target: latLatPosition, zoom: 14);
-  //   newgoogleMapController!
-  //       .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-  // }
+  static final CameraPosition _KGooglePlex =
+      CameraPosition(target: LatLng(37.4267861, -122.0806032));
 
-  // static const _initialCameraPosition = CameraPosition(
-  //   target: LatLng(37.42796133580664, -122.085749655962),
-  //   zoom: 14.4746,
-  // );
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -131,41 +122,22 @@ class _MainScreenState extends State<MainScreen> {
       body: Stack(
         children: [
           GoogleMap(
-            initialCameraPosition:
-                CameraPosition(target: _initialcameraposition),
+            padding: EdgeInsets.only(bottom: bottomPaddingOfMap),
             mapType: MapType.normal,
-            onMapCreated: _onMapCreated,
+            myLocationButtonEnabled: true,
+            initialCameraPosition: _KGooglePlex,
             myLocationEnabled: true,
+            zoomGesturesEnabled: true,
+            zoomControlsEnabled: true,
+            onMapCreated: (GoogleMapController controller) {
+              _controllerGoogleMap.complete(controller);
+              newgoogleMapController = controller;
+              setState(() {
+                bottomPaddingOfMap = 300.0;
+              });
+              locatePosition();
+            },
           ),
-          // Positioned(
-          //   top: 45.0,
-          //   right: 22.0,
-          //   child: GestureDetector(
-          //     onTap: () {
-          //       // locatePosition();
-          //     },
-          //     child: Container(
-          //       decoration: BoxDecoration(
-          //           color: Colors.white,
-          //           borderRadius: BorderRadius.circular(22.0),
-          //           boxShadow: const [
-          //             BoxShadow(
-          //                 color: Colors.black,
-          //                 blurRadius: 6.0,
-          //                 spreadRadius: 0.5,
-          //                 offset: Offset(0.7, 0.7))
-          //           ]),
-          //       child: CircleAvatar(
-          //         backgroundColor: Colors.white,
-          //         child: Icon(
-          //           Icons.center_focus_strong,
-          //           color: Colors.black,
-          //         ),
-          //         radius: 20.0,
-          //       ),
-          //     ),
-          //   ),
-          // ),
           Positioned(
             top: 45.0,
             left: 22.0,
@@ -275,16 +247,17 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
+                          children:  [
                             Text("Add Home"),
                             SizedBox(
                               height: 4.0,
                             ),
                             Text(
-                              "your living home address",
+                              "your living home address in $address",
                               style: TextStyle(
                                   color: Colors.black54, fontSize: 12.0),
-                            )
+                            ),
+                           
                           ],
                         )
                       ],

@@ -42,6 +42,7 @@ dependencies:
   geolocator:
   location:
   http:
+  provider:
 
 dev_dependencies:
   flutter_test:

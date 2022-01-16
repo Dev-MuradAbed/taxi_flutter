@@ -10,10 +10,10 @@ class RequesrAssistans {
         String jsonData = response.body;
         var decodeData = jsonDecode(jsonData);
       } else {
-        return "No respons";
+        return "failed";
       }
     } catch (e) {
-      return "No respons";
+      return "failed";
     }
   }
 }
