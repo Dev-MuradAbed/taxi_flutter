@@ -3,9 +3,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:taxiflutter/AllWidgets/divider.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:taxiflutter/Assistants/assistant_methods.dart';
+import 'package:taxiflutter/DataHandler/appdata.dart';
 
 class MainScreen extends StatefulWidget {
   static const String idScreen = "mainScreen";
@@ -37,7 +39,7 @@ class _MainScreenState extends State<MainScreen> {
         CameraPosition(target: latLatPosition, zoom: 15);
     newgoogleMapController!
         .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-    address = await AssistantMethods.searchCoordinateAddress(position);
+    address = await AssistantMethods.searchCoordinateAddress(position,context);
 
     setState(() {
       address = address;
@@ -252,12 +254,20 @@ class _MainScreenState extends State<MainScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("Add Home"),
+                            Text(
+                           Provider
+                                .of<AppData>(context)
+                                .PickUpLocation != null
+                                ? Provider
+                                .of<AppData>(context)
+                                .PickUpLocation!
+                                .placeName
+                                    : "Add Home",overflow: TextOverflow.ellipsis),                  
                             SizedBox(
                               height: 4.0,
                             ),
                             Text(
-                              "$address",
+                              "your living home address",
                               style: TextStyle(
                                   color: Colors.black54, fontSize: 12.0),
                             ),

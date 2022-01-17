@@ -1,10 +1,15 @@
 import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
+import 'package:taxiflutter/DataHandler/appdata.dart';
+import 'package:taxiflutter/Models/address.dart';
 import 'package:taxiflutter/config_map.dart';
 import 'package:dio/dio.dart';
 
 class AssistantMethods {
-  static Future<String> searchCoordinateAddress(Position position) async {
+  static Future<String> searchCoordinateAddress(
+      Position position, context) async {
     String Placeaddress = "";
+    String st1, st2, st3, st4;
     Dio dio = Dio(); //initilize dio package
     String apiurl =
         "https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=$mapKey";
@@ -19,8 +24,14 @@ class AssistantMethods {
         if (data["results"].length > 0) {
           //if there is atleast one address
           Map firstresult = data["results"][0]; //select the first address
-
           Placeaddress = firstresult["formatted_address"]; //get the address
+          print("The Long Name" + Placeaddress);
+          Address userPickUpAddress = Address();
+          userPickUpAddress.longtude = position.longitude;
+          userPickUpAddress.latitude = position.latitude;
+          userPickUpAddress.placeName = Placeaddress;
+          Provider.of<AppData>(context, listen: false)
+              .updatePickUpLocationAddress(userPickUpAddress);
 
           //you can use the JSON data to get address in your own format
 
@@ -31,7 +42,7 @@ class AssistantMethods {
     } else {
       print("error while fetching geoconding data");
     }
-    print("Your Place Address"+Placeaddress);
+    print("Your Place Address" + Placeaddress);
     return Placeaddress;
   }
 }
