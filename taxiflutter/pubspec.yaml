@@ -41,8 +41,9 @@ dependencies:
   google_maps_flutter:
   geolocator:
   location:
-  http:
+  dio:
   provider:
+  # dio:
 
 dev_dependencies:
   flutter_test:

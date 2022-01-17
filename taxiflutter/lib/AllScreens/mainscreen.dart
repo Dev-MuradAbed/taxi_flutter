@@ -22,9 +22,11 @@ class _MainScreenState extends State<MainScreen> {
   late Position currentPosition;
   var geoLocator = Geolocator();
   double bottomPaddingOfMap = 0;
- static String? address;
+  static String? address;
   late LatLng latLatPosition;
+  late LocationPermission permission;
   void locatePosition() async {
+    permission = await Geolocator.requestPermission();
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     currentPosition = position;
@@ -32,13 +34,15 @@ class _MainScreenState extends State<MainScreen> {
     latLatPosition = LatLng(position.latitude, position.longitude);
     print("The latLatPosition= :: ${latLatPosition}");
     CameraPosition cameraPosition =
-        CameraPosition(target: latLatPosition, zoom: 14);
+        CameraPosition(target: latLatPosition, zoom: 15);
     newgoogleMapController!
         .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-     address = await AssistantMethods.searchCoordinateAddress(position);
-  
-      print("This is your Address :: " + address!);
-    
+    address = await AssistantMethods.searchCoordinateAddress(position);
+
+    setState(() {
+      address = address;
+    });
+    print("This is your Address :: " + address!);
   }
 
   static final CameraPosition _KGooglePlex =
@@ -247,17 +251,16 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children:  [
+                          children: [
                             Text("Add Home"),
                             SizedBox(
                               height: 4.0,
                             ),
                             Text(
-                              "your living home address in $address",
+                              "$address",
                               style: TextStyle(
                                   color: Colors.black54, fontSize: 12.0),
                             ),
-                           
                           ],
                         )
                       ],
