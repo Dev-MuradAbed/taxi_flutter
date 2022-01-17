@@ -40,10 +40,8 @@ dependencies:
   fluttertoast:
   google_maps_flutter:
   geolocator:
-  location:
-  dio:
+  dio:  #use dio instans http
   provider:
-  # dio:
 
 dev_dependencies:
   flutter_test:
